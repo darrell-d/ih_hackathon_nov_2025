@@ -1,11 +1,21 @@
 #!/bin/sh
 set -e
 
-# AWS CLI automatically uses these env vars:
-# - AWS_ACCESS_KEY_ID
-# - AWS_SECRET_ACCESS_KEY
-# - AWS_DEFAULT_REGION (or AWS_REGION)
+# Validate environment variable
+if [ -z "$OUTPUT_DIR" ]; then
+  echo "ERROR: OUTPUT_DIR must be set"
+  exit 1
+fi
 
+# Create output directory if it doesn't exist
+mkdir -p "$OUTPUT_DIR"
+
+# Create a file with content
+echo "Hello World from ECS Task Runner!" > "$OUTPUT_DIR/hello.txt"
+echo "Created file at: $OUTPUT_DIR/hello.txt"
+
+# Run the ECS task
+echo "Starting ECS task..."
 aws ecs run-task \
   --cluster gpu-workflow-cluster \
   --task-definition maestro-gpu-task-definition \
